@@ -75,9 +75,8 @@ Waveforms are dumped to `dump.vcd` and can be viewed in GTKWave.
 - [x] Transmitter — verified in simulation
 - [x] Receiver — verified in simulation
 - [x] TX→RX loopback — verified in simulation
-- [ ] Synthesis and timing closure in Vivado
+- [X] Synthesis and timing closure in Vivado
 - [ ] Hardware bring-up on Arty A7-100T
-- [ ] Framing/parity error detection
 - [ ] Configurable baud rate at synthesis time
 
 ## Target Hardware
