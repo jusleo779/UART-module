@@ -81,4 +81,4 @@ Waveforms are dumped to `dump.vcd` and can be viewed in GTKWave.
 
 ## Target Hardware
 
-Arty A7-100T (Xilinx Artix-7). Not yet synthesized or tested on physical hardware — simulation only at this stage.
+Arty A7-100T (Xilinx Artix-7). Not yet tested on physical hardware — simulation only at this stage.
