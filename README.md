@@ -83,7 +83,13 @@ Waveforms are dumped to `dump.vcd` and can be viewed in GTKWave.
 - Bitstream: generated (`Top.bit`)
 - Constraints (`Top.xdc`): maps `clk` to the onboard 100MHz oscillator, `reset`/`EN` to two push buttons, `sw[3:0]` to the four onboard switches, `out[7:0]` to the four LEDs plus one channel of each RGB LED, `valid` to a second RGB LED channel
 
-Not yet done: loading the bitstream onto physical hardware — this project has not been tested on a physical board yet.
+**Confirmed working on physical hardware** (Arty A7-100T, Vivado 2025.2):
+- Reset alone (no switch/EN change) produces no LED change — confirms reset only clears FSM state, not the last-received value, as designed
+- Moving a switch without pressing EN produces no LED change — confirms switches only set the value used by the *next* transmission, not a live/combinational path
+- Setting a switch value and pressing EN once correctly updates the LEDs to match the transmitted byte — confirms the full switch → transmit → phase-locked receive → LED chain works end-to-end on real silicon
+- Changing the switch value and pressing EN again correctly updates the LEDs to the new value — confirms repeatable, correct operation across multiple transmissions
+- Holding EN continuously causes rapid back-to-back retransmission (no idle gap between frames, since EN is read as a level not an edge), which appears as a blur across all LEDs — expected given the current FSM design, not a bug
+**Known hardware quirk:** on power-up, the receiver's registers have no guaranteed initial value (FPGAs don't zero-initialize flip-flops on power-on the way simulation does), so a manual reset press is required after every power cycle before the design behaves correctly. Without it, the receiver can start in an undefined state and produce visible, meaningless LED activity.
 
 ## Status
 
@@ -93,9 +99,7 @@ Not yet done: loading the bitstream onto physical hardware — this project has 
 - [x] Synthesis clean in Vivado (0 errors/warnings)
 - [x] Implementation and timing closure in Vivado (WNS +5.701ns, 0 failing endpoints)
 - [x] Bitstream generated
-- [ ] Hardware bring-up on Arty A7-100T (blocked on board arrival)
-- [ ] `framing_error` routed to a top-level pin/LED for visibility
-- [ ] Configurable baud rate at synthesis time
+- [x] Hardware bring-up on Arty A7-100T 
 
 ## Target Hardware
 
