@@ -6,10 +6,10 @@ A UART transmitter and receiver implemented from scratch in Verilog, with full l
 
 This project implements the UART serial communication protocol as a set of modular RTL blocks:
 
-- **Baud Rate Generator** — divides the system clock down to the target baud rate, with a reconfigurable first-pulse target to support phase-locked receiver sampling
-- **Transmitter (State Machine + Shift Register)** — serializes an 8-bit byte into a standard UART frame (start bit, 8 data bits LSB-first, stop bit)
-- **Receiver** — detects an incoming start bit, phase-aligns to the middle of each bit period, and deserializes the incoming line into an 8-bit byte
-- **Top Level** — wires transmitter and receiver together in loopback for end-to-end verification
+- **Baud Rate Generator** -- divides the system clock down to the target baud rate, with a reconfigurable first-pulse target to support phase-locked receiver sampling
+- **Transmitter (State Machine + Shift Register)** -- serializes an 8-bit byte into a standard UART frame (start bit, 8 data bits LSB-first, stop bit)
+- **Receiver** -- detects an incoming start bit, phase-aligns to the middle of each bit period, and deserializes the incoming line into an 8-bit byte
+- **Top Level** -- wires transmitter and receiver together in loopback for end-to-end verification
 
 ## Architecture
 
@@ -34,7 +34,7 @@ sw[3:0] ──▶{4'b0000,sw}──▶┌─────────────
                                     out[7:0], valid
 ```
 
-**Note on hardware input width:** the Arty A7-100T only exposes 4 physical switches, so the top-level `data` port was changed from `input [7:0] data` to `input [3:0] sw`. The upper nibble is hardcoded to `4'b0000` inside `Top` (`data = {4'b0000, sw}`), so only the low nibble is switch-controlled on real hardware. This is a hardware-interface constraint, not a limitation of the UART core itself — the underlying transmitter/receiver still handle a full 8-bit byte.
+**Note on hardware input width:** the Arty A7-100T only exposes 4 physical switches, so the top-level `data` port was changed from `input [7:0] data` to `input [3:0] sw`. The upper nibble is hardcoded to `4'b0000` inside `Top` (`data = {4'b0000, sw}`), so only the low nibble is switch-controlled on real hardware. This is a hardware-interface constraint, not a limitation of the UART core itself; the transmitter/receiver still handle a full 8-bit byte.
 
 ## Modules
 
@@ -48,13 +48,13 @@ sw[3:0] ──▶{4'b0000,sw}──▶┌─────────────
 
 ## Key Design Decisions
 
-**No runtime division.** The baud rate divisor is computed once (`clk_freq / baud_rate`) and hardcoded as a parameter, rather than synthesizing a hardware divider.
+**No runtime division:** The baud rate divisor is computed once (`clk_freq / baud_rate`) and hardcoded as a parameter, rather than synthesizing a hardware divider.
 
-**Mid-bit sampling.** The receiver does not sample immediately on detecting the start bit — it waits half a bit period first, then samples every full bit period after that, landing in the most stable part of each bit.
+**Mid-bit sampling:** The receiver does not sample immediately on detecting the start bit — it waits half a bit period first, then samples every full bit period after that, landing in the most stable part of each bit.
 
-**Phase-locked receiver clock.** An early version used two independent free-running baud generators (one for the half-period alignment pulse, one for full-period ticks). Both counted from global `reset`, not from the actual arrival time of the start bit — so the receiver's sampling point had no fixed relationship to where the real bit boundaries were. Fixed by using a single reconfigurable generator whose reset is triggered by the receiver's own start-bit detection (`start_detected`), so its count always restarts from the correct reference point for that specific transmission.
+**Phase-locked receiver clock:** An early version used two independent free-running baud generators (one for the half-period alignment pulse, one for full-period ticks). Both counted from global `reset`, not from the actual arrival time of the start bit — so the receiver's sampling point had no fixed relationship to where the real bit boundaries were. Fixed by using a single reconfigurable generator whose reset is triggered by the receiver's own start-bit detection (`start_detected`), so its count always restarts from the correct reference point for that specific transmission.
 
-**Strobe-style handshaking.** `valid` pulses high for exactly one clock cycle when a new byte is ready, rather than staying high indefinitely — a standard pattern for signaling "new data available" without occupying a persistent state.
+**Strobe-style handshaking:** `valid` pulses high for exactly one clock cycle when a new byte is ready, rather than staying high indefinitely — a standard pattern for signaling "new data available" without occupying a persistent state.
 
 ## Simulation
 
