@@ -1,6 +1,6 @@
 # UART Transceiver — Verilog
 
-A UART transmitter and receiver implemented from scratch in Verilog, with full loopback verification in simulation and a clean synthesis/implementation pass in Vivado targeting the Arty A7-100T. No starter code, no lab manual — built and debugged independently.
+A UART transmitter and receiver implemented from scratch in Verilog, with full loopback verification in simulation and a clean synthesis/implementation pass in Vivado targeting the Arty A7-100T. No starter code, no lab manual; built and debugged independently.
 
 ## Overview
 
