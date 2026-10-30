@@ -6,10 +6,10 @@ A UART transmitter and receiver implemented from scratch in Verilog, with full l
 
 This project implements the UART serial communication protocol as a set of modular RTL blocks:
 
-- **Baud Rate Generator** --- divides the system clock down to the target baud rate, with a reconfigurable first-pulse target to support phase-locked receiver sampling
-- **Transmitter (State Machine + Shift Register)** -- serializes an 8-bit byte into a standard UART frame (start bit, 8 data bits LSB-first, stop bit)
-- **Receiver** --- detects an incoming start bit, phase-aligns to the middle of each bit period, and deserializes the incoming line into an 8-bit byte
-- **Top Level** --- wires transmitter and receiver together in loopback for end-to-end verification
+- **Baud Rate Generator** - divides the system clock down to the target baud rate, with a reconfigurable first-pulse target to support phase-locked receiver sampling
+- **Transmitter (State Machine + Shift Register)** - serializes an 8-bit byte into a standard UART frame (start bit, 8 data bits LSB-first, stop bit)
+- **Receiver** - detects an incoming start bit, phase-aligns to the middle of each bit period, and deserializes the incoming line into an 8-bit byte
+- **Top Level** - wires transmitter and receiver together in loopback for end-to-end verification
 
 ## Architecture
 
