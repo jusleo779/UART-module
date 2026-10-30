@@ -30,7 +30,7 @@ always@(posedge clk) begin
         
             IDLE: begin
                 tx <= 1;
-                if(EN) 
+                if(EN && tick) 
                     state <= START;
             end
 
@@ -48,9 +48,10 @@ always@(posedge clk) begin
                 if(tick) begin
                     shift <= 1;
                     count <= count + 1;
-                    if(count == 8)begin
+                    if(count == 7) begin
                         state <= STOP;
                         count <= 0;
+                        shift <= 0;
                     end
                 end
                 else
